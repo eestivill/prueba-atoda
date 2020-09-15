@@ -3,7 +3,7 @@ const EstadosPedidosService = require('../services/estadosPedidos');
 
 function estadosPedidosApi(app) {
     const router = express.Router();
-    app.use('/api/estadosPedidos', router);
+    app.use('/api/estadospedidos', router);
   
     const estadosPedidosService = new EstadosPedidosService();
 
