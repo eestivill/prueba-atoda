@@ -47,7 +47,7 @@ function estadosPedidosApi(app) {
               message: 'Devuelto registro de EstadosPedidos'
             });  
           } else {
-            response.status(404).json({
+            res.status(404).json({
               data: idEstadoPedido,
               message: 'No existe el registro en EstadosPedidos'
             });

@@ -22,12 +22,24 @@
   "produces": ["application/json"],
   "paths": {
     "/estadospedidos": {
+      "get": {
+        "tags": ["EstadosPedidos"],
+        "summary": "Devuelve todos los estados de los pedidos",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/EstadosPedidosGetAllResponse"
+            }
+          }
+        }
+      },
       "post": {
         "tags": ["EstadosPedidos"],
-        "description": "Crea un nuevo estado del pedido",
+        "summary": "Crea un nuevo estado del pedido",
         "parameters": [
           {
-            "name": "EstadoPedido",
+            "name": "EstadosPedidos",
             "in": "body",
             "description": "Estado del pedido a crear",
             "schema": {
@@ -41,18 +53,6 @@
             "description": "Insertado registro en EstadosPedidos",
             "schema": {
                 "$ref": "#/definitions/EstadosPedidosPostResponse"
-            }
-          }
-        }
-      },
-      "get": {
-        "tags": ["EstadosPedidos"],
-        "summary": "Devuelve todos los estados de los pedidos",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/EstadosPedidosPostResponse"
             }
           }
         }
@@ -71,23 +71,23 @@
       "get": {
         "tags": ["EstadosPedidos"],
         "summary": "Devuelve un estado de pedido dado un ID",
+        "parameters": [
+            {
+            "name": "IdEstadoPedido",
+            "in": "path",
+            "schema": {
+              "type": "string",
+              "example": "ALTA",
+              "required": "true"
+            },
+            "description": "ID del estado de pedido a buscar"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Devuelto registro de EstadosPedidos",
             "schema": {
-              "$ref": "#/definitions/EstadosPedidosPostResponse"
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Borrar un estado de pedido dado un ID",
-        "tags": ["EstadosPedidos"],
-        "responses": {
-          "200": {
-            "description": "Borrado registro de EstadosPedidos",
-            "schema": {
-              "$ref": "#/definitions/EstadosPedidosPostResponse"
+              "$ref": "#/definitions/EstadosPedidosGetResponse"
             }
           }
         }
@@ -96,12 +96,22 @@
         "summary": "Actualizar el estado de un pedido dado un ID",
         "tags": ["EstadosPedidos"],
         "parameters": [
-          {
-            "name": "EstadoPedido",
+            {
+                "name": "IdEstadoPedido",
+                "in": "path",
+                "schema": {
+                  "type": "string",
+                  "example": "ALTA",
+                  "required": "true"
+                },
+                "description": "ID del estado de pedido a modificar"
+              },  
+            {
+            "name": "EstadosPedidos",
             "in": "body",
             "description": "Estado de pedido con sus nuevas propiedades",
             "schema": {
-              "$ref": "#/definitions/EstadoPedido"
+              "$ref": "#/definitions/EstadosPedidosPut"
             }
           }
         ],
@@ -109,7 +119,31 @@
           "200": {
             "description": "Modificado registro de EstadosPedidos",
             "schema": {
-              "$ref": "#/definitions/EstadosPedidosPostResponse"
+              "$ref": "#/definitions/EstadosPedidosPutResponse"
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Borrar un estado de pedido dado un ID",
+        "tags": ["EstadosPedidos"],
+        "parameters": [
+            {
+              "name": "IdEstadoPedido",
+              "in": "path",
+              "schema": {
+                "type": "string",
+                "example": "ALTA",
+                "required": "true"
+              },
+              "description": "ID del estado de pedido a borrar"
+            }
+          ],
+        "responses": {
+          "200": {
+            "description": "Borrado registro de EstadosPedidos",
+            "schema": {
+              "$ref": "#/definitions/EstadosPedidosDeleteResponse"
             }
           }
         }
@@ -117,7 +151,7 @@
     }
   },
   "definitions": {
-    "EstadoPedido": {
+    "EstadosPedidos": {
       "required": ["IdEstadoPedido", "Nombre", "Activo"],
       "properties": {
         "IdEstadoPedido": {
@@ -131,15 +165,61 @@
         },
         "Activo": {
           "type": "integer",
-          "example": "1"
+          "example": 1
         }
       }
     },
-    "EstadosPedidos": {
-      "type": "array",
-      "$ref": "#/definitions/EstadoPedido"
+    "EstadosPedidosPut": {
+        "properties": {
+          "Nombre": {
+            "type": "string",
+            "example": "PEDIDO CREADO"
+          },
+          "Activo": {
+            "type": "integer",
+            "example": 1
+          }
+        }
+      },  
+    "EstadosPedidosGetAllResponse": {
+        "properties": {
+            "data": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/EstadosPedidos"
+                },
+                "example": [{
+                    "IdEstadoPedido": "ALTA",
+                    "Nombre": "Pedido creado",
+                    "Activo": 1
+                },{
+                    "IdEstadoPedido": "CANC",
+                    "Nombre": "Pedido cancelado",
+                    "Activo": 1
+                }
+                ]
+            },
+            "message": {
+                "type": "string",
+                "example": "Listados todos los EstadosPedidos"
+            }
+        }
     },
-    "EstadoPedidoPostResponse": {
+    "EstadosPedidosGetResponse": {
+        "properties": {
+            "data": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/EstadosPedidos"
+                }
+            },
+            "message": {
+                "type": "string",
+                "example": "Devuelto registro de EstadosPedidos"
+            }
+        }
+    },
+    "EstadosPedidosPostResponse": {
         "properties": {
             "data": {
             "type": "string",
@@ -151,10 +231,31 @@
             }
         }
     },
-    "EstadosPedidosPostResponse": {
-        "type": "array",
-        "$ref": "#/definitions/EstadoPedidoPostResponse"
-      }
-  
-}
+    "EstadosPedidosPutResponse": {
+        "properties": {
+            "data": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/EstadosPedidos"
+                }
+            },
+            "message": {
+                "type": "string",
+                "example": "Modificado registro de EstadosPedidos"
+            }
+        }
+    },
+    "EstadosPedidosDeleteResponse": {
+        "properties": {
+            "data": {
+            "type": "string",
+            "example": "ALTA"
+            },
+            "message": {
+                "type": "string",
+                "example": "Borrado registro de EstadosPedidos"
+            }
+        }
+    }
+    }
 }
