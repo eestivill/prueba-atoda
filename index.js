@@ -5,9 +5,12 @@ const app = express();
 const { config } = require('./config/index');
 const estadosPedidosApi = require('./routes/estadosPedidos.js');
 
-app.listen(config.port, function() {
-    console.log(`Listening http://localhost:${config.port}`);
-});
+const { logErrors, wrapErrors, errorHandler } = require('./utils/middleware/errorHandlers.js');
+
+const notFoundHandler = require('./utils/middleware/notFoundHandler');
+
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger.json');
 
 // Middleware - Body parser
 app.use(express.json());
@@ -15,31 +18,16 @@ app.use(express.json());
 // Routes
 estadosPedidosApi(app);
 
-/*
-var mysql = require('mysql');
-var conexion= mysql.createConnection({
-    host : 'localhost',
-    database : 'atodaco_beta',
-    user : 'atodaco_beta',
-    password : 'atodaco_beta',
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+// Catch 404
+app.use(notFoundHandler);
+
+// Manejadores de errores del middleware
+app.use(logErrors);
+app.use(wrapErrors);
+app.use(errorHandler);
+
+app.listen(config.port, function() {
+    console.log(`Listening http://localhost:${config.port}`);
 });
-
-conexion.connect(function(err) {
-    if (err) {
-        console.error('Error de conexion: ' + err.stack);
-        return;
-    }
-    console.log('Conectado con el identificador ' + conexion.threadId);
-});
-
-conexion.query('SELECT * FROM estadospedidos', function (error, results, fields) {
-    if (error)
-        throw error;
-
-    results.forEach(result => {
-        console.log(result);
-    });
-});
-
-conexion.end();
-*/

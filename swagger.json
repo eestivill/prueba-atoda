@@ -1,0 +1,160 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "atoda API",
+    "description": "Documentación de la API REST de atoda.co"
+  },
+  "servers": {
+    "url": "https://atoda.co",
+    "description": "Entorno de produccíon"
+  },
+  "host": "localhost:3000",
+  "basePath": "/api",
+  "tags": [
+    {
+      "name": "EstadosPedidos",
+      "description": "API el maestro de EstadosPedidos (posibles estados de los pedidos)"
+    }
+  ],
+  "schemes": ["http"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "paths": {
+    "/estadospedidos": {
+      "post": {
+        "tags": ["EstadosPedidos"],
+        "description": "Crea un nuevo estado del pedido",
+        "parameters": [
+          {
+            "name": "EstadoPedido",
+            "in": "body",
+            "description": "Estado del pedido a crear",
+            "schema": {
+              "$ref": "#/definitions/EstadosPedidos"
+            }
+          }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Insertado registro en EstadosPedidos",
+            "schema": {
+                "$ref": "#/definitions/EstadosPedidosPostResponse"
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["EstadosPedidos"],
+        "summary": "Devuelve todos los estados de los pedidos",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/EstadosPedidosPostResponse"
+            }
+          }
+        }
+      }
+    },
+    "/estadospedidos/{IdEstadoPedido}": {
+      "parameters": [
+        {
+          "name": "IdEstadoPedido",
+          "in": "path",
+          "required": true,
+          "description": "ID del estado que se quiere buscar",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "tags": ["EstadosPedidos"],
+        "summary": "Devuelve un estado de pedido dado un ID",
+        "responses": {
+          "200": {
+            "description": "Devuelto registro de EstadosPedidos",
+            "schema": {
+              "$ref": "#/definitions/EstadosPedidosPostResponse"
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Borrar un estado de pedido dado un ID",
+        "tags": ["EstadosPedidos"],
+        "responses": {
+          "200": {
+            "description": "Borrado registro de EstadosPedidos",
+            "schema": {
+              "$ref": "#/definitions/EstadosPedidosPostResponse"
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Actualizar el estado de un pedido dado un ID",
+        "tags": ["EstadosPedidos"],
+        "parameters": [
+          {
+            "name": "EstadoPedido",
+            "in": "body",
+            "description": "Estado de pedido con sus nuevas propiedades",
+            "schema": {
+              "$ref": "#/definitions/EstadoPedido"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Modificado registro de EstadosPedidos",
+            "schema": {
+              "$ref": "#/definitions/EstadosPedidosPostResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "EstadoPedido": {
+      "required": ["IdEstadoPedido", "Nombre", "Activo"],
+      "properties": {
+        "IdEstadoPedido": {
+          "type": "string",
+          "example": "ALTA",
+          "uniqueItems": true
+        },
+        "Nombre": {
+          "type": "string",
+          "example": "PEDIDO CREADO"
+        },
+        "Activo": {
+          "type": "integer",
+          "example": "1"
+        }
+      }
+    },
+    "EstadosPedidos": {
+      "type": "array",
+      "$ref": "#/definitions/EstadoPedido"
+    },
+    "EstadoPedidoPostResponse": {
+        "properties": {
+            "data": {
+            "type": "string",
+            "example": "ALTA"
+            },
+            "message": {
+                "type": "string",
+                "example": "Insertado registro en EstadosPedidos"
+            }
+        }
+    },
+    "EstadosPedidosPostResponse": {
+        "type": "array",
+        "$ref": "#/definitions/EstadoPedidoPostResponse"
+      }
+  
+}
+}

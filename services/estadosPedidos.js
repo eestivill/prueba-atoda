@@ -1,68 +1,68 @@
-//const mySQLLibPool = require('../lib/mysqlPool');
 const mySQLLib = require('../lib/mysql');
 
 class EstadosPedidosService {
     constructor() {
+        this.collection = 'EstadosPedidos';
         this.mySQLDB = new mySQLLib();
     }
 
-    getEstadosPedidos = function(callback)
-    {
-        this.mySQLDB.client.query('SELECT * FROM EstadosPedidos WHERE Activo', function(error, estadosPedidos) {
-			if (error) {
+    getEstadosPedidos = function(callback) {
+        this.mySQLDB.sql = 'SELECT * FROM EstadosPedidos WHERE Activo = 1';
+
+        this.mySQLDB.getAll(this.collection, function(error, estadosPedidos) {
+            if (error) {
 				throw error;
 			} else {
-                //console.log("estadosPedidos: ", estadosPedidos);
-				callback(null, estadosPedidos);
+                callback(null, estadosPedidos);
 			}
 		});
 	}
 
-    getEstadoPedido = function(idEstadoPedido, callback)
-    {
-        const sql = 'SELECT * FROM EstadosPedidos WHERE IdEstadoPedido = ' + this.mySQLDB.client.escape(idEstadoPedido);
+    getEstadoPedido = function(idEstadoPedido, callback) {
+        this.mySQLDB.sql = "SELECT * FROM EstadosPedidos WHERE IdEstadoPedido = " + this.mySQLDB.client.escape(idEstadoPedido);
 
-        this.mySQLDB.client.query(sql, function(error, estadoPedido) {
+        this.mySQLDB.get(this.collection, function(error, estadoPedido) {
 			if (error) {
 				throw error;
 			} else {
-                //console.log("estadoPedido: ", estadoPedido);
-				callback(null, estadoPedido);
+                callback(null, estadoPedido);
 			}
 		});
     }
 
     createEstadoPedido(estadoPedido, callback) {
-        this.mySQLDB.client.query('INSERT INTO EstadosPedidos SET ?', estadoPedido, function(err, result) {
-			if (err) {
-				throw err;
+        this.mySQLDB.sql = "INSERT INTO EstadosPedidos SET ? ";
+        this.mySQLDB.data = estadoPedido;
+
+        this.mySQLDB.create(this.collection, function(error, result) {
+			if (error) {
+				throw error;
 			} else {
-                console.log("result", result);
-				callback(null, result.affectedRows);
+                callback(null, result.affectedRows);
 			}
 		});
     }
 
     updatePedido(idEstadoPedido, estadoPedido, callback) {
-        const sql = 'UPDATE EstadosPedidos SET ? ' + connection.escape(estadoPedido)  +' WHERE id = ' + idEstadoPedido;
+        this.mySQLDB.sql = "UPDATE EstadosPedidos SET " + this.mySQLDB.client.escape(estadoPedido)  + " WHERE IdEstadoPedido = '" + idEstadoPedido + "'";
 
-        this.mySQLDB.client.query(sql, function(error, estadoPedido) {
+        this.mySQLDB.update(function(error, result) {
             if (error) {
                 throw error;
             } else {
-                callback(null,{"message":"Modificado"});
+                callback(null, result.affectedRows);
 			}
 		});
     }
 
     deleteEstadoPedido(idEstadoPedido, callback) {
-        const sql = 'DELETE FROM EstadosPedidos WHERE IdEstadoPedido = ' + this.mySQLDB.client.escape(idEstadoPedido);
+        this.mySQLDB.sql = "DELETE FROM EstadosPedidos WHERE IdEstadoPedido = '" + idEstadoPedido + "'";
 
-        this.mySQLDB.client.query(sql, function(error, estadoPedido) {
+        this.mySQLDB.delete(function(error, result) {
             if (error) {
                 throw error;
             } else {
-                callback(null,{"mensaje":"Borrado"});
+                callback(null, result.affectedRows);
 			}
 		});
     }
