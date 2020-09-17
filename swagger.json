@@ -111,7 +111,7 @@
             "in": "body",
             "description": "Estado de pedido con sus nuevas propiedades",
             "schema": {
-              "$ref": "#/definitions/EstadosPedidosPut"
+              "$ref": "#/definitions/EstadosPedidosPutRequest"
             }
           }
         ],
@@ -169,7 +169,7 @@
         }
       }
     },
-    "EstadosPedidosPut": {
+    "EstadosPedidosPutRequest": {
         "properties": {
           "Nombre": {
             "type": "string",
