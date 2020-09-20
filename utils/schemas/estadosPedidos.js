@@ -1,6 +1,6 @@
 const joi = require('@hapi/joi');
 
-const idEstadoPedidoSchema = joi.string().min(1).max(4);
+const idEstadoPedidoSchema = joi.number().min(1).max(9999);
 const nombreSchema = joi.string().max(50);
 const activoSchema = joi.number().min(0).max(1);
 
